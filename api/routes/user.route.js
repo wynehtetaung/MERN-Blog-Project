@@ -4,4 +4,4 @@ const router = Router();
 
 router.get("/test", test);
 
-export const userRouter = router;
+export const userRoutes = router;
