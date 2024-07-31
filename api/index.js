@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { userRoutes } from "./routes/user.route.js";
 import { authRoutes } from "./routes/auth.route.js";
+import { error } from "./middleware/error.middleware.js";
 
 dotenv.config();
 
@@ -26,5 +27,6 @@ mongoose
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use(error);
 
 app.listen(PORT, () => console.log(`server is running at ${PORT}`));

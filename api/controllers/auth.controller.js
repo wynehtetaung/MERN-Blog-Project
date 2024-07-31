@@ -1,13 +1,11 @@
 import User from "../models/user.model.js";
+import { errorHandler } from "../utils/error.js";
 import { removeSpace } from "../utils/utils.js";
 import bcrypt from "bcrypt";
-export const signUp = async (req, res) => {
+export const signUp = async (req, res, next) => {
   const { name, email, password } = req.body;
   if (!removeSpace(name) || !removeSpace(email) || !removeSpace(password)) {
-    res.status(400).json({
-      success: false,
-      message: "All fields are required.",
-    });
+    next(errorHandler(400, "All fields are required."));
     return false;
   }
   const hash = await bcrypt.hash(password, 10);
@@ -24,9 +22,6 @@ export const signUp = async (req, res) => {
       });
     })
     .catch((e) => {
-      res.status(400).json({
-        success: false,
-        message: new Error(e).message,
-      });
+      next(errorHandler(400, new Error(e).message));
     });
 };
