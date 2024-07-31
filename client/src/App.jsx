@@ -3,15 +3,20 @@ import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Projects from "./pages/Projects";
 import Layout from "./Layout";
 import Error from "./pages/Error";
+import News from "./pages/News";
+import Home from "./pages/Home";
 
 const routes = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -25,8 +30,8 @@ const routes = createBrowserRouter([
         element: <SignUp />,
       },
       {
-        path: "/projects",
-        element: <Projects />,
+        path: "/news",
+        element: <News />,
       },
       {
         path: "/about",
