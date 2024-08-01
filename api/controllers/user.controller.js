@@ -1,3 +1,6 @@
 export const test = (req, res) => {
-  res.json(`api is working`);
+  res.status(200).json({
+    success: true,
+    message: `api is working`,
+  });
 };

@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cors from "cors";
 import { userRoutes } from "./routes/user.route.js";
 import { authRoutes } from "./routes/auth.route.js";
 import { error } from "./middleware/error.middleware.js";
@@ -13,6 +14,7 @@ const MONGO_STR =
   process.env.MONGO_ATLAS || "mongodb://127.0.0.1:27017/mern-blog";
 
 app.use(express.json());
+app.use(cors());
 
 mongoose
   .connect(MONGO_STR)

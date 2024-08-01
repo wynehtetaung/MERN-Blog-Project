@@ -22,6 +22,6 @@ export const signUp = async (req, res, next) => {
       });
     })
     .catch((e) => {
-      next(errorHandler(400, new Error(e).message));
+      next(errorHandler(409, new Error(e).message));
     });
 };
