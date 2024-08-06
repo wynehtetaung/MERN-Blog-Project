@@ -1,5 +1,4 @@
 import { Footer } from "flowbite-react";
-import { Link } from "react-router-dom";
 
 export default function FooterCom() {
   return (
