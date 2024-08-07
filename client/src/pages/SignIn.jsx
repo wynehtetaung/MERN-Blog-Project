@@ -5,46 +5,51 @@ import { useRef, useState } from "react";
 import { checkEye } from "../utils/utils";
 import axios from "axios";
 import AlertMessage from "../components/AlertMessage";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [eye, setEye] = useState(false);
   const [showEye, setShowEye] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { loading: isLoading, error: errorMessage } = useSelector(
+    (state) => state.user
+  );
+  const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
   const submitHandler = async () => {
-    setIsLoading(true);
     try {
-      const { status } = await axios.post(`/api/auth/signin`, {
+      dispatch(signInStart());
+      const { status, data } = await axios.post(`/api/auth/signin`, {
         email: emailRef.current.value.trim(),
         password: passwordRef.current.value.trim(),
       });
       if (status === 200) {
-        setAlertMessage({
-          color: "success",
-          message: "Login Success!",
-          time: 3000,
-        });
+        dispatch(signInSuccess(data.resource));
         setTimeout(() => {
           navigate("/");
-        }, 2000);
+        }, 1000);
       }
     } catch (error) {
-      setAlertMessage({
-        color: "failure",
-        message: error.response.data.message,
-        time: 3000,
-      });
+      dispatch(
+        signInFailure({
+          color: "failure",
+          message: error.response.data.message,
+          time: 4000,
+        })
+      );
     }
-    setIsLoading(false);
   };
   return (
     <div className="min-h-screen mt-20 ">
-      {alertMessage && (
+      {errorMessage && (
         <div className="mb-6 flex justify-center">
-          <AlertMessage state={alertMessage} setSate={setAlertMessage} />
+          <AlertMessage state={errorMessage} />
         </div>
       )}
       <div className="flex flex-col justify-center gap-10 items-center md:flex-row lg:gap-36 md:gap-20 md:pt-20">

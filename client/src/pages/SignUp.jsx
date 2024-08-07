@@ -6,6 +6,7 @@ import { checkEye } from "../utils/utils";
 import { passwordStrength } from "check-password-strength";
 import axios from "axios";
 import AlertMessage from "../components/AlertMessage";
+
 export default function SignUp() {
   const [eye, setEye] = useState(false);
   const [showEye, setShowEye] = useState(false);
