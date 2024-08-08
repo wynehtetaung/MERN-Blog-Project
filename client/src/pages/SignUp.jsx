@@ -6,6 +6,8 @@ import { checkEye } from "../utils/utils";
 import { passwordStrength } from "check-password-strength";
 import axios from "axios";
 import AlertMessage from "../components/AlertMessage";
+import GoogleLogin from "../components/GoogleLogin";
+import { useSelector } from "react-redux";
 
 export default function SignUp() {
   const [eye, setEye] = useState(false);
@@ -13,6 +15,11 @@ export default function SignUp() {
   const [passwordStrengthMessage, setPasswordStrengthMessage] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    loading: googleLoading,
+    google: checkGoogle,
+    error: errorMessage,
+  } = useSelector((state) => state.user);
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -20,11 +27,20 @@ export default function SignUp() {
   const submitHandler = async () => {
     setIsLoading(true);
     try {
-      const { status } = await axios.post(`/api/auth/signup`, {
-        name: nameRef.current.value.trim(),
-        email: emailRef.current.value.trim(),
-        password: passwordRef.current.value.trim(),
-      });
+      const { status } = await axios.post(
+        `/api/auth/signup`,
+        {
+          name: nameRef.current.value.trim(),
+          email: emailRef.current.value.trim(),
+          password: passwordRef.current.value.trim(),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
       if (status === 201) {
         setAlertMessage({
           color: "success",
@@ -53,11 +69,15 @@ export default function SignUp() {
   };
   return (
     <div className="min-h-screen mt-20 ">
-      {alertMessage && (
-        <div className="mb-6 flex justify-center">
-          <AlertMessage state={alertMessage} setSate={setAlertMessage} />
-        </div>
-      )}
+      {alertMessage ||
+        (errorMessage && (
+          <div className="mb-6 flex justify-center">
+            <AlertMessage
+              state={alertMessage || errorMessage}
+              setSate={setAlertMessage}
+            />
+          </div>
+        ))}
       <div className="flex flex-col justify-center gap-10 items-center md:flex-row lg:gap-36 md:gap-20 md:pt-20">
         <div className="w-full px-4 md:w-2/6">
           <Link to={`/`} className="text-4xl font-normal dark:text-white">
@@ -156,6 +176,10 @@ export default function SignUp() {
                   "Sing Up"
                 )}
               </Button>
+              <GoogleLogin
+                isLoading={googleLoading}
+                checkGoogle={checkGoogle}
+              />
               <div className="text-sm mt-3">
                 <span className="font-sans">Have an account?</span>
                 <Link

@@ -2,8 +2,14 @@ import { Button, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { signInFailure } from "../redux/user/userSlice";
 export default function Header() {
   const path = useLocation().pathname;
+  const dispatch = useDispatch();
+  if (path == "/signIn" || path == "/signup") {
+    dispatch(signInFailure(null));
+  }
   return (
     <Navbar className="border-b-2 ">
       <Link

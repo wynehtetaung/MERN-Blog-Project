@@ -11,13 +11,16 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import GoogleLogin from "../components/GoogleLogin";
 
 export default function SignIn() {
   const [eye, setEye] = useState(false);
   const [showEye, setShowEye] = useState(false);
-  const { loading: isLoading, error: errorMessage } = useSelector(
-    (state) => state.user
-  );
+  const {
+    loading: isLoading,
+    google: checkGoogle,
+    error: errorMessage,
+  } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -25,10 +28,19 @@ export default function SignIn() {
   const submitHandler = async () => {
     try {
       dispatch(signInStart());
-      const { status, data } = await axios.post(`/api/auth/signin`, {
-        email: emailRef.current.value.trim(),
-        password: passwordRef.current.value.trim(),
-      });
+      const { status, data } = await axios.post(
+        `/api/auth/signin`,
+        {
+          email: emailRef.current.value.trim(),
+          password: passwordRef.current.value.trim(),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
       if (status === 200) {
         dispatch(signInSuccess(data.resource));
         setTimeout(() => {
@@ -45,6 +57,7 @@ export default function SignIn() {
       );
     }
   };
+
   return (
     <div className="min-h-screen mt-20 ">
       {errorMessage && (
@@ -111,15 +124,16 @@ export default function SignIn() {
                 gradientDuoTone="purpleToPink"
                 disabled={isLoading}
               >
-                {isLoading ? (
+                {isLoading && !checkGoogle ? (
                   <>
                     <Spinner size={`sm`} color={`purple`} />
                     <span className="pl-3">Loading</span>
                   </>
                 ) : (
-                  "Sing Up"
+                  "Sing In"
                 )}
               </Button>
+              <GoogleLogin isLoading={isLoading} checkGoogle={checkGoogle} />
               <div className="text-sm mt-3">
                 <span className="font-sans">Don&apos;t have an account?</span>
                 <Link
