@@ -38,7 +38,7 @@ export const signIn = async (req, res, next) => {
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) {
-      return next(errorHandler(404, "user not found!"));
+      return next(errorHandler(404, "User not found! Create new account."));
     }
     const validPassword = await bcrypt.compare(password, validUser.password);
     if (!validPassword) {
@@ -64,7 +64,7 @@ export const signIn = async (req, res, next) => {
 };
 
 export const googleLogin = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, profile } = req.body;
   if (!removeSpace(name) || !removeSpace(email) || !removeSpace(password)) {
     return next(errorHandler(400, "All fields are required."));
   }
@@ -96,6 +96,7 @@ export const googleLogin = async (req, res, next) => {
         name,
         email,
         password: hash,
+        profile,
       })
         .save()
         .then((result) => {

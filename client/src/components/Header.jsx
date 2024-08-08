@@ -1,15 +1,18 @@
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { signInFailure } from "../redux/user/userSlice";
+import { useSelector } from "react-redux";
 export default function Header() {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
   if (path == "/signIn" || path == "/signup") {
     dispatch(signInFailure(null));
   }
+
   return (
     <Navbar className="border-b-2 ">
       <Link
@@ -35,11 +38,37 @@ export default function Header() {
         <div className="cursor-pointer text-xs border rounded-full p-2 border-stone-400 hidden sm:inline">
           <FaMoon />
         </div>
-        <Link to={`/signIn`}>
-          <Button outline gradientDuoTone="purpleToPink" className="font-sans">
-            Sign In
-          </Button>
-        </Link>
+        {!currentUser ? (
+          <Link to={`/signIn`}>
+            <Button
+              outline
+              gradientDuoTone="purpleToPink"
+              className="font-sans"
+            >
+              Sign In
+            </Button>
+          </Link>
+        ) : (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={<Avatar alt="user" img={currentUser.profile} rounded />}
+          >
+            <Dropdown.Header>
+              <span className="block text-sm text-gray-800">
+                {currentUser.name}
+              </span>
+              <span className="block text-sm text-gray-800">
+                {currentUser.email}
+              </span>
+            </Dropdown.Header>
+            <Link to={`/dashboard?tab=profile`}>
+              <Dropdown.Item>Profile</Dropdown.Item>
+            </Link>
+            <Dropdown.Divider />
+            <Dropdown.Item>Sign Out</Dropdown.Item>
+          </Dropdown>
+        )}
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>

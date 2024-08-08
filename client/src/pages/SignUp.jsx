@@ -15,11 +15,9 @@ export default function SignUp() {
   const [passwordStrengthMessage, setPasswordStrengthMessage] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    loading: googleLoading,
-    google: checkGoogle,
-    error: errorMessage,
-  } = useSelector((state) => state.user);
+  const { loading: googleLoading, google: checkGoogle } = useSelector(
+    (state) => state.user
+  );
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -42,11 +40,6 @@ export default function SignUp() {
         }
       );
       if (status === 201) {
-        setAlertMessage({
-          color: "success",
-          message: "Account Created!",
-          time: 3000,
-        });
         setTimeout(() => {
           navigate("/signIn");
         }, 2000);
@@ -58,6 +51,8 @@ export default function SignUp() {
           message: "Account is already exists",
           time: 3000,
         });
+        setIsLoading(false);
+        return false;
       }
       setAlertMessage({
         color: "failure",
@@ -69,15 +64,11 @@ export default function SignUp() {
   };
   return (
     <div className="min-h-screen mt-20 ">
-      {alertMessage ||
-        (errorMessage && (
-          <div className="mb-6 flex justify-center">
-            <AlertMessage
-              state={alertMessage || errorMessage}
-              setSate={setAlertMessage}
-            />
-          </div>
-        ))}
+      {alertMessage && (
+        <div className="mb-6 flex justify-center">
+          <AlertMessage state={alertMessage} setState={setAlertMessage} />
+        </div>
+      )}
       <div className="flex flex-col justify-center gap-10 items-center md:flex-row lg:gap-36 md:gap-20 md:pt-20">
         <div className="w-full px-4 md:w-2/6">
           <Link to={`/`} className="text-4xl font-normal dark:text-white">

@@ -31,6 +31,7 @@ export default function GoogleLogin({ isLoading, checkGoogle }) {
             name: data.name,
             email: data.email,
             password: data.sub,
+            profile: data.picture,
           },
           {
             headers: {
