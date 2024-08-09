@@ -40,9 +40,7 @@ export default function SignUp() {
         }
       );
       if (status === 201) {
-        setTimeout(() => {
-          navigate("/signIn");
-        }, 2000);
+        navigate("/signIn");
       }
     } catch (error) {
       if (error.response.status === 409) {

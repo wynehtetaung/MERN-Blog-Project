@@ -1,20 +1,22 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { signInFailure } from "../redux/user/userSlice";
+// import { signInFailure } from "../redux/user/userSlice";
 import { toggleTheme } from "../redux/theme/themeSlice";
 export default function Header() {
   const path = useLocation().pathname;
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
-  if (path == "/signIn" || path == "/signup") {
-    dispatch(signInFailure(null));
-  }
+  // if (path == "/signIn" || path == "/signup") {
+  //   dispatch(signInFailure(null));
+  // }
   const logoutHandler = () => {
     localStorage.removeItem("persist:root");
+    navigate("/");
     window.location.reload();
   };
   return (
@@ -62,12 +64,8 @@ export default function Header() {
             label={<Avatar alt="user" img={currentUser.profile} rounded />}
           >
             <Dropdown.Header>
-              <span className="block text-sm text-gray-800">
-                {currentUser.name}
-              </span>
-              <span className="block text-sm text-gray-800">
-                {currentUser.email}
-              </span>
+              <span className="block text-sm">{currentUser.name}</span>
+              <span className="block text-sm">{currentUser.email}</span>
             </Dropdown.Header>
             <Link to={`/dashboard?tab=profile`}>
               <Dropdown.Item>Profile</Dropdown.Item>
@@ -88,6 +86,24 @@ export default function Header() {
         <Navbar.Link active={path === `/about`} as={`div`}>
           <Link to={`/about`}>About</Link>
         </Navbar.Link>
+
+        <div className="mt-2 md:hidden">
+          {theme === "light" ? (
+            <div
+              className="cursor-pointer text-xs border w-10 rounded-full py-2 pr-2 pl-1 ml-2  border-stone-400 "
+              onClick={() => dispatch(toggleTheme())}
+            >
+              <FaMoon />
+            </div>
+          ) : (
+            <div
+              className="cursor-pointer text-xs border w-10 rounded-full py-2 pr-1 pl-5 ml-2 border-stone-400 "
+              onClick={() => dispatch(toggleTheme())}
+            >
+              <FaSun />
+            </div>
+          )}
+        </div>
       </Navbar.Collapse>
     </Navbar>
   );
