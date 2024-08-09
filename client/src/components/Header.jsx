@@ -1,18 +1,22 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { signInFailure } from "../redux/user/userSlice";
-import { useSelector } from "react-redux";
+import { toggleTheme } from "../redux/theme/themeSlice";
 export default function Header() {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  const { theme } = useSelector((state) => state.theme);
   if (path == "/signIn" || path == "/signup") {
     dispatch(signInFailure(null));
   }
-
+  const logoutHandler = () => {
+    localStorage.removeItem("persist:root");
+    window.location.reload();
+  };
   return (
     <Navbar className="border-b-2 ">
       <Link
@@ -35,8 +39,11 @@ export default function Header() {
         <AiOutlineSearch />
       </div>
       <div className="flex gap-3 justify-center items-center md:order-2">
-        <div className="cursor-pointer text-xs border rounded-full p-2 border-stone-400 hidden sm:inline">
-          <FaMoon />
+        <div
+          className="cursor-pointer text-xs border rounded-full p-2 border-stone-400 hidden sm:inline"
+          onClick={() => dispatch(toggleTheme())}
+        >
+          {theme === "light" ? <FaMoon /> : <FaSun />}
         </div>
         {!currentUser ? (
           <Link to={`/signIn`}>
@@ -66,7 +73,7 @@ export default function Header() {
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
-            <Dropdown.Item>Sign Out</Dropdown.Item>
+            <Dropdown.Item onClick={logoutHandler}>Sign Out</Dropdown.Item>
           </Dropdown>
         )}
         <Navbar.Toggle />
